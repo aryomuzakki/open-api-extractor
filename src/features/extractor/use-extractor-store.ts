@@ -251,6 +251,77 @@ export const actions = {
 		}));
 	},
 
+	/**
+	 * Go back to spec input, keeping the raw text editable.
+	 * Clears the parsed spec/operations so SpecInput is shown again.
+	 */
+	backToInput() {
+		extractorStore.setState((state) => ({
+			...state,
+			parsedSpec: null,
+			operations: [],
+			selectedKeys: [],
+			isExtracted: false,
+			outputText: "",
+			diagnostics: null,
+			error: null,
+		}));
+	},
+
+	/**
+	 * Permanently remove a path+method from the loaded operations list.
+	 * Different from deselect — removes it entirely from the pool.
+	 */
+	removeOperation(method: string, path: string) {
+		const key = `${method.toUpperCase()} ${path}`;
+		extractorStore.setState((state) => ({
+			...state,
+			operations: state.operations.filter(
+				(op) => `${op.method.toUpperCase()} ${op.path}` !== key,
+			),
+			selectedKeys: state.selectedKeys.filter((k) => k !== key),
+		}));
+	},
+
+	/**
+	 * Permanently remove ALL methods for a given path from the operations list.
+	 */
+	removePath(path: string) {
+		extractorStore.setState((state) => ({
+			...state,
+			operations: state.operations.filter((op) => op.path !== path),
+			selectedKeys: state.selectedKeys.filter(
+				(k) => !k.endsWith(` ${path}`),
+			),
+		}));
+	},
+
+	/**
+	 * Permanently remove all operations that belong to a given tag.
+	 * "Default (No Tag)" removes all operations with no tags.
+	 */
+	removeTag(tag: string) {
+		const isDefault = tag === "Default (No Tag)";
+		extractorStore.setState((state) => {
+			const toRemove = new Set(
+				state.operations
+					.filter((op) =>
+						isDefault
+							? op.tags.length === 0
+							: op.tags.includes(tag),
+					)
+					.map((op) => `${op.method.toUpperCase()} ${op.path}`),
+			);
+			return {
+				...state,
+				operations: state.operations.filter(
+					(op) => !toRemove.has(`${op.method.toUpperCase()} ${op.path}`),
+				),
+				selectedKeys: state.selectedKeys.filter((k) => !toRemove.has(k)),
+			};
+		});
+	},
+
 	reset() {
 		extractorStore.setState(() => initialStoreState);
 	},

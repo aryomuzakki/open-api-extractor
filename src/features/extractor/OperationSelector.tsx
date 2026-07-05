@@ -1,10 +1,13 @@
 import { useStore } from "@tanstack/react-store";
 import {
 	CheckSquareIcon,
+	FileCode2Icon,
+	FolderMinusIcon,
 	SearchIcon,
 	Settings2Icon,
 	SparklesIcon,
 	SquareIcon,
+	Trash2Icon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -165,6 +168,14 @@ export function OperationSelector() {
 						className="flex-1 sm:flex-initial cursor-pointer"
 					>
 						<SquareIcon className="mr-2 h-4 w-4" /> Deselect All
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={actions.backToInput}
+						className="flex-1 sm:flex-initial cursor-pointer text-muted-foreground hover:text-foreground"
+					>
+						<FileCode2Icon className="mr-2 h-4 w-4" /> Edit Spec
 					</Button>
 				</div>
 			</div>
@@ -331,9 +342,19 @@ export function OperationSelector() {
 											{tag}
 										</Label>
 									</div>
-									<span className="text-xs text-muted-foreground font-semibold bg-background/80 px-2 py-0.5 rounded-full">
-										{tagOps.length} endpoints
-									</span>
+									<div className="flex items-center gap-2">
+										<span className="text-xs text-muted-foreground font-semibold bg-background/80 px-2 py-0.5 rounded-full">
+											{tagOps.length} endpoints
+										</span>
+										<button
+											type="button"
+											title={`Remove all operations in "${tag}"`}
+											onClick={() => actions.removeTag(tag)}
+											className="flex items-center justify-center rounded p-1.5 text-muted-foreground/40 transition-colors hover:bg-rose-500/10 hover:text-rose-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
+										>
+											<Trash2Icon className="h-3.5 w-3.5" />
+										</button>
+									</div>
 								</div>
 								<CardContent className="p-0 divide-y divide-border/50">
 									{tagOps.map((op) => {
@@ -378,6 +399,30 @@ export function OperationSelector() {
 														)}
 													</div>
 												</label>
+												{/* Remove this method only */}
+												<button
+													type="button"
+													title="Remove this method"
+													onClick={(e) => {
+														e.stopPropagation();
+														actions.removeOperation(op.method, op.path);
+													}}
+													className="shrink-0 flex items-center justify-center rounded p-1.5 text-muted-foreground/40 transition-colors hover:bg-rose-500/10 hover:text-rose-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
+												>
+													<Trash2Icon className="h-3.5 w-3.5" />
+												</button>
+												{/* Remove entire path (all methods) */}
+												<button
+													type="button"
+													title="Remove entire path (all methods)"
+													onClick={(e) => {
+														e.stopPropagation();
+														actions.removePath(op.path);
+													}}
+													className="shrink-0 flex items-center justify-center rounded p-1.5 text-muted-foreground/40 transition-colors hover:bg-rose-500/15 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
+												>
+													<FolderMinusIcon className="h-3.5 w-3.5" />
+												</button>
 											</div>
 										);
 									})}
@@ -389,13 +434,23 @@ export function OperationSelector() {
 			</div>
 
 			{/* Float Action Sticky / Bottom Bar */}
-			<div className="flex items-center justify-between border-t pt-4 mt-2">
-				<div className="text-sm">
-					<span className="font-extrabold text-primary">
-						{selectedKeys.length}
-					</span>{" "}
-					of <span className="font-semibold">{operations.length}</span>{" "}
-					endpoints selected
+			<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t pt-4 mt-2">
+				<div className="flex items-center gap-4">
+					<div className="text-sm">
+						<span className="font-extrabold text-primary">
+							{selectedKeys.length}
+						</span>{" "}
+						of <span className="font-semibold">{operations.length}</span>{" "}
+						endpoints selected
+					</div>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={actions.backToInput}
+						className="cursor-pointer text-muted-foreground hover:text-foreground"
+					>
+						<FileCode2Icon className="mr-2 h-4 w-4" /> Edit Spec
+					</Button>
 				</div>
 				<Button
 					onClick={actions.extract}
