@@ -241,6 +241,16 @@ export const actions = {
 		}
 	},
 
+	backToSelection() {
+		extractorStore.setState((state) => ({
+			...state,
+			isExtracted: false,
+			outputText: "",
+			diagnostics: null,
+			error: null,
+		}));
+	},
+
 	reset() {
 		extractorStore.setState(() => initialStoreState);
 	},

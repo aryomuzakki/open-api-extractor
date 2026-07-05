@@ -114,7 +114,7 @@ export function OutputPanel() {
 					<Button
 						variant="secondary"
 						size="sm"
-						onClick={actions.reset}
+						onClick={actions.backToSelection}
 						className="cursor-pointer"
 					>
 						<ListRestartIcon className="mr-2 h-4 w-4" /> Start Over
