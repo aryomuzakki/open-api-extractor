@@ -1,59 +1,181 @@
 import { Store } from "@tanstack/store";
 import type {
-	BrokenRefMode,
-	ExtractionDiagnostics,
-	InputFormat,
-	OpenApiSpec,
-	OperationInfo,
-	OutputFormat,
-	TagOutputMode,
+  BrokenRefMode,
+  ExtractionDiagnostics,
+  InputFormat,
+  OpenApiSpec,
+  OperationInfo,
+  OutputFormat,
+  TagOutputMode,
 } from "#/lib/open-api-extractor";
 import {
-	extractOpenApi,
-	listOperations,
-	parseOpenApi,
+  extractOpenApi,
+  listOperations,
+  parseOpenApi,
 } from "#/lib/open-api-extractor";
 
 export interface ExtractorState {
-	rawInput: string;
-	parsedSpec: OpenApiSpec | null;
-	inputFormat: InputFormat;
-	operations: OperationInfo[];
-	selectedKeys: string[]; // format: "METHOD path" (e.g. "GET /v1/users")
-	outputFormat: OutputFormat;
-	outputText: string;
-	error: string | null;
-	isExtracted: boolean;
-	diagnostics: ExtractionDiagnostics | null;
+  rawInput: string;
+  parsedSpec: OpenApiSpec | null;
+  inputFormat: InputFormat;
+  operations: OperationInfo[];
+  selectedKeys: string[]; // format: "METHOD path" (e.g. "GET /v1/users")
+  outputFormat: OutputFormat;
+  outputText: string;
+  error: string | null;
+  isExtracted: boolean;
+  diagnostics: ExtractionDiagnostics | null;
 
-	// Extraction options
-	keepReferencedComponents: boolean;
-	removeUnusedComponents: boolean;
-	tagOutputMode: TagOutputMode;
-	onBrokenRef: BrokenRefMode;
-	removeExtensions: boolean;
+  // Extraction options
+  keepReferencedComponents: boolean;
+  removeUnusedComponents: boolean;
+  tagOutputMode: TagOutputMode;
+  onBrokenRef: BrokenRefMode;
+  removeExtensions: boolean;
 }
 
-const initialStoreState: ExtractorState = {
-	rawInput: "",
-	parsedSpec: null,
-	inputFormat: "json",
-	operations: [],
-	selectedKeys: [],
-	outputFormat: "json",
-	outputText: "",
-	error: null,
-	isExtracted: false,
-	diagnostics: null,
+// ─── Persistence ─────────────────────────────────────────────────────────────
 
-	keepReferencedComponents: true,
-	removeUnusedComponents: true,
-	tagOutputMode: "used",
-	onBrokenRef: "warn",
-	removeExtensions: false,
+const STORAGE_KEY = "openapi-extractor-state";
+
+/** Fields that are serialisable and worth preserving across reloads. */
+type PersistedState = Pick<
+  ExtractorState,
+  | "rawInput"
+  | "inputFormat"
+  | "selectedKeys"
+  | "outputFormat"
+  | "outputText"
+  | "isExtracted"
+  | "diagnostics"
+  | "keepReferencedComponents"
+  | "removeUnusedComponents"
+  | "tagOutputMode"
+  | "onBrokenRef"
+  | "removeExtensions"
+>;
+
+function loadFromStorage(): Partial<PersistedState> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) as Partial<PersistedState>;
+  } catch {
+    return {};
+  }
+}
+
+function saveToStorage(state: ExtractorState) {
+  try {
+    const persisted: PersistedState = {
+      rawInput: state.rawInput,
+      inputFormat: state.inputFormat,
+      selectedKeys: state.selectedKeys,
+      outputFormat: state.outputFormat,
+      outputText: state.outputText,
+      isExtracted: state.isExtracted,
+      diagnostics: state.diagnostics,
+      keepReferencedComponents: state.keepReferencedComponents,
+      removeUnusedComponents: state.removeUnusedComponents,
+      tagOutputMode: state.tagOutputMode,
+      onBrokenRef: state.onBrokenRef,
+      removeExtensions: state.removeExtensions,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
+  } catch {
+    // storage quota exceeded or unavailable — silently ignore
+  }
+}
+
+/** Debounce saves so rapid keystrokes don't thrash localStorage with large payloads. */
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+function scheduleSave(state: ExtractorState) {
+  if (saveTimer !== null) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveToStorage(state);
+    saveTimer = null;
+  }, 300);
+}
+
+// ─── Hydration ────────────────────────────────────────────────────────────────
+
+function buildInitialState(): ExtractorState {
+  const saved = loadFromStorage();
+
+  const base: ExtractorState = {
+    ...{
+      rawInput: "",
+      parsedSpec: null,
+      inputFormat: "json",
+      operations: [],
+      selectedKeys: [],
+      outputFormat: "json",
+      outputText: "",
+      error: null,
+      isExtracted: false,
+      diagnostics: null,
+      keepReferencedComponents: true,
+      removeUnusedComponents: true,
+      tagOutputMode: "used",
+      onBrokenRef: "warn",
+      removeExtensions: false,
+    },
+    ...saved,
+    // Always reset transient fields
+    parsedSpec: null,
+    operations: [],
+    error: null,
+  };
+
+  // Re-derive parsedSpec and operations from saved rawInput
+  if (base.rawInput.trim()) {
+    try {
+      const { spec, inputFormat } = parseOpenApi(base.rawInput);
+      const operations = listOperations(spec);
+      base.parsedSpec = spec;
+      base.inputFormat = inputFormat;
+      base.operations = operations;
+
+      // Validate that persisted selectedKeys still exist in the re-parsed spec
+      const validKeys = new Set(operations.map(op => `${op.method} ${op.path}`));
+      base.selectedKeys = base.selectedKeys.filter(k => validKeys.has(k));
+    } catch {
+      // Saved input is no longer valid — keep rawInput so user can see/fix it
+      base.isExtracted = false;
+      base.outputText = "";
+      base.diagnostics = null;
+    }
+  }
+
+  return base;
+}
+
+const emptyState: ExtractorState = {
+  rawInput: "",
+  parsedSpec: null,
+  inputFormat: "json",
+  operations: [],
+  selectedKeys: [],
+  outputFormat: "json",
+  outputText: "",
+  error: null,
+  isExtracted: false,
+  diagnostics: null,
+  keepReferencedComponents: true,
+  removeUnusedComponents: true,
+  tagOutputMode: "used",
+  onBrokenRef: "warn",
+  removeExtensions: false,
 };
 
+const initialStoreState: ExtractorState = buildInitialState();
+
 export const extractorStore = new Store<ExtractorState>(initialStoreState);
+
+// Subscribe and persist after every state change
+extractorStore.subscribe(() => {
+  scheduleSave(extractorStore.state);
+});
 
 // Actions/Helpers to mutate state
 export const actions = {
@@ -323,6 +445,11 @@ export const actions = {
 	},
 
 	reset() {
-		extractorStore.setState(() => initialStoreState);
+		try {
+			localStorage.removeItem(STORAGE_KEY);
+		} catch {
+			// ignore
+		}
+		extractorStore.setState(() => emptyState);
 	},
 };
