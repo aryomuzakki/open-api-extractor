@@ -1,87 +1,140 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+	Code2Icon,
+	FileJsonIcon,
+	FileTextIcon,
+	ScissorsIcon,
+	ShieldCheckIcon,
+	ZapIcon,
+} from "lucide-react";
+import { Toaster } from "#/components/ui/sonner";
+import { TooltipProvider } from "#/components/ui/tooltip";
+import { ExtractorTool } from "#/features/extractor/ExtractorTool";
 
 export const Route = createFileRoute("/")({ component: App });
 
 function App() {
 	return (
-		<main className="page-wrap px-4 pb-8 pt-14">
-			<section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-				<div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-				<div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-				<p className="island-kicker mb-3">TanStack Start Base Template</p>
-				<h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-					Start simple, ship quickly.
-				</h1>
-				<p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-					This base starter intentionally keeps things light: two routes, clean
-					structure, and the essentials you need to build from scratch.
-				</p>
-				<div className="flex flex-wrap gap-3">
-					<a
-						href="/about"
-						className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-					>
-						About This Starter
-					</a>
-					<a
-						href="https://tanstack.com/router"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
-					>
-						Router Guide
-					</a>
-				</div>
-			</section>
+		<TooltipProvider>
+			<main className="page-wrap px-4 pb-16 pt-8 sm:pt-12">
+				{/* Hero Tool Section */}
+				<section className="flex flex-col gap-6 mb-12">
+					<div className="text-center max-w-3xl mx-auto flex flex-col gap-3 mb-4">
+						<div className="inline-flex items-center justify-center self-center px-3 py-1 text-xs font-bold tracking-wider text-primary bg-primary/10 border border-primary/20 rounded-full">
+							<ScissorsIcon className="mr-1.5 h-3 w-3" /> CLIENT-ONLY OpenAPI
+							UTILITY
+						</div>
+						<h1 className="display-title text-4xl sm:text-6xl font-black tracking-tight text-[var(--sea-ink)] leading-[1.05]">
+							Extract the endpoints you need.
+						</h1>
+						<p className="text-base sm:text-lg text-[var(--sea-ink-soft)] max-w-2xl mx-auto">
+							Load any OpenAPI spec, check the paths you want to keep, and
+							download a clean, pruned subset with all schema dependencies
+							intact.
+						</p>
+					</div>
 
-			<section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				{[
-					[
-						"Type-Safe Routing",
-						"Routes and links stay in sync across every page.",
-					],
-					[
-						"Server Functions",
-						"Call server code from your UI without creating API boilerplate.",
-					],
-					[
-						"Streaming by Default",
-						"Ship progressively rendered responses for faster experiences.",
-					],
-					[
-						"Tailwind Native",
-						"Design quickly with utility-first styling and reusable tokens.",
-					],
-				].map(([title, desc], index) => (
-					<article
-						key={title}
-						className="island-shell feature-card rise-in rounded-2xl p-5"
-						style={{ animationDelay: `${index * 90 + 80}ms` }}
-					>
-						<h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-							{title}
+					<div className="w-full">
+						<ExtractorTool />
+					</div>
+				</section>
+
+				{/* How It Works & Explanatory Details Section */}
+				<section className="flex flex-col gap-8 border-t border-[var(--line)] pt-12">
+					<div className="text-center flex flex-col gap-2 max-w-xl mx-auto">
+						<h2 className="display-title text-2xl sm:text-3xl font-bold text-[var(--sea-ink)]">
+							Designed for API Consumers & Providers
 						</h2>
-						<p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-					</article>
-				))}
-			</section>
+						<p className="text-sm text-[var(--sea-ink-soft)]">
+							Simplify large API contracts into compact integration subsets.
+							Safe, local-only processing.
+						</p>
+					</div>
 
-			<section className="island-shell mt-8 rounded-2xl p-6">
-				<p className="island-kicker mb-2">Quick Start</p>
-				<ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-					<li>
-						Edit <code>src/routes/index.tsx</code> to customize the home page.
-					</li>
-					<li>
-						Update <code>src/components/Header.tsx</code> and{" "}
-						<code>src/components/Footer.tsx</code> for brand links.
-					</li>
-					<li>
-						Add routes in <code>src/routes</code> and tweak visual tokens in{" "}
-						<code>src/styles.css</code>.
-					</li>
-				</ul>
-			</section>
-		</main>
+					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+						<article className="island-shell rounded-2xl p-6 flex flex-col gap-3 bg-background/30">
+							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+								<Code2Icon className="h-5 w-5" />
+							</div>
+							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+								Local-Only Pruning
+							</h3>
+							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+								Everything runs inside your browser. Your API specifications,
+								paths, keys, and schemas are never uploaded to any server.
+							</p>
+						</article>
+
+						<article className="island-shell rounded-2xl p-6 flex flex-col gap-3 bg-background/30">
+							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+								<FileJsonIcon className="h-5 w-5" />
+							</div>
+							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+								Smart dependency resolution
+							</h3>
+							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+								Automatically traces and includes all local component reference
+								schemas (`$ref`) used by your selected endpoints, pruning
+								everything else.
+							</p>
+						</article>
+
+						<article className="island-shell rounded-2xl p-6 flex flex-col gap-3 bg-background/30">
+							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+								<ZapIcon className="h-5 w-5" />
+							</div>
+							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+								JSON & YAML Support
+							</h3>
+							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+								Pasted strings or uploaded files can be in JSON or YAML format.
+								Output formats can be toggled instantly between JSON and YAML.
+							</p>
+						</article>
+
+						<article className="island-shell rounded-2xl p-6 flex flex-col gap-3 bg-background/30">
+							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+								<ScissorsIcon className="h-5 w-5" />
+							</div>
+							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+								Regex & Extension Strip
+							</h3>
+							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+								Strip custom vendor extensions (`x-*` fields) and choose whether
+								to retain original tags or only output tags used by selected
+								paths.
+							</p>
+						</article>
+
+						<article className="island-shell rounded-2xl p-6 flex flex-col gap-3 bg-background/30">
+							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+								<ShieldCheckIcon className="h-5 w-5" />
+							</div>
+							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+								Broken Ref Warnings
+							</h3>
+							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+								Detects and displays warnings or halts on broken references
+								inside the final spec, ensuring your subset remains fully valid.
+							</p>
+						</article>
+
+						<article className="island-shell rounded-2xl p-6 flex flex-col gap-3 bg-background/30">
+							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+								<FileTextIcon className="h-5 w-5" />
+							</div>
+							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+								Clean Specs
+							</h3>
+							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+								Outputs formatted, production-ready schemas with all empty
+								objects, tags, and unused components cleaned up.
+							</p>
+						</article>
+					</div>
+				</section>
+			</main>
+			<Toaster position="bottom-center" />
+		</TooltipProvider>
 	);
 }
