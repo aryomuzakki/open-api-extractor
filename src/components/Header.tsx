@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ScissorsIcon } from "lucide-react";
+import SaveStatusIndicator from "./SaveStatusIndicator";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
@@ -33,6 +34,7 @@ export default function Header() {
 						</svg>
 					</a>
 
+					<SaveStatusIndicator />
 					<ThemeToggle />
 				</div>
 			</nav>

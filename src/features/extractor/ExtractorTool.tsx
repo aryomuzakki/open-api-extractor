@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "#/components/ui/card";
+import { HydrationLoader } from "./HydrationLoader";
 import { OperationSelector } from "./OperationSelector";
 import { OutputPanel } from "./OutputPanel";
 import { SpecInput } from "./SpecInput";
@@ -68,12 +69,14 @@ export function ExtractorTool() {
 				</div>
 			</CardHeader>
 
-			<CardContent className="p-6 sm:p-8">
-				{!parsedSpec && <SpecInput />}
+			<CardContent className="relative p-6 sm:p-8">
+				<HydrationLoader>
+					{!parsedSpec && <SpecInput />}
 
-				{parsedSpec && !isExtracted && <OperationSelector />}
+					{parsedSpec && !isExtracted && <OperationSelector />}
 
-				{isExtracted && <OutputPanel />}
+					{isExtracted && <OutputPanel />}
+				</HydrationLoader>
 			</CardContent>
 		</Card>
 	);
