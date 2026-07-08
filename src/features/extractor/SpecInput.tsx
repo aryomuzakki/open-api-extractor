@@ -1,5 +1,6 @@
 "use client";
 
+import Editor from "@monaco-editor/react";
 import { useStore } from "@tanstack/react-store";
 import {
 	AlertTriangleIcon,
@@ -11,21 +12,30 @@ import {
 import { useRef, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "#/components/ui/alert";
 import { Button, buttonVariants } from "#/components/ui/button";
-import { Textarea } from "#/components/ui/textarea";
+import { useThemeObserver } from "#/hooks/use-theme-observer";
 import { cn } from "@/lib/utils";
 import { actions, extractorStore } from "./use-extractor-store";
+
+function getLanguage(text: string): string {
+	const trimmed = text.trim();
+	if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+		return "json";
+	}
+	return "yaml";
+}
 
 export function SpecInput() {
 	const [dragOver, setDragOver] = useState(false);
 	const [fileName, setFileName] = useState<string>("");
 	const [loading, setLoading] = useState(false);
 	const textareaRef = useRef<HTMLDivElement>(null);
+	const theme = useThemeObserver();
 
 	const rawInput = useStore(extractorStore, (state) => state.rawInput);
 	const error = useStore(extractorStore, (state) => state.error);
 
-	const handlePasteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		actions.setInputText(e.target.value);
+	const handleEditorChange = (val: string | undefined) => {
+		actions.setInputText(val || "");
 		if (fileName) setFileName("");
 	};
 
@@ -239,17 +249,41 @@ export function SpecInput() {
 					onDrop={handleDrop}
 					className="relative"
 				>
-					<Textarea
-						value={rawInput}
-						onChange={handlePasteChange}
-						placeholder={
-							'e.g., {"openapi": "3.0.0", "info": ...}\n\nYou can also drop a .json, .yaml or .yml file here.'
-						}
+					<div
 						className={cn(
-							"min-h-[300px] max-h-[50dvh] resize-y font-mono text-xs bg-background/50 border-input transition-all duration-150",
+							"rounded-xl border bg-background/50 overflow-hidden transition-all duration-150",
 							dragOver && "border-primary ring-2 ring-primary/20",
 						)}
-					/>
+					>
+						<Editor
+							height="320px"
+							language={getLanguage(rawInput)}
+							theme={theme}
+							value={rawInput}
+							onChange={handleEditorChange}
+							loading={
+								<div className="flex h-[320px] w-full items-center justify-center gap-2 text-xs text-muted-foreground bg-background/50">
+									<Loader2Icon className="h-4 w-4 animate-spin text-primary" />
+									<span>Loading editor...</span>
+								</div>
+							}
+							options={{
+								minimap: { enabled: false },
+								wordWrap: "on",
+								lineNumbers: "on",
+								scrollBeyondLastLine: false,
+								automaticLayout: true,
+								fontSize: 12,
+								fontFamily: "var(--font-mono), monospace",
+								padding: { top: 8, bottom: 8 },
+								folding: true,
+								glyphMargin: false,
+								lineDecorationsWidth: 10,
+								lineNumbersMinChars: 3,
+								theme: theme === "vs-dark" ? "vs-dark" : "light",
+							}}
+						/>
+					</div>
 
 					{/* Drag overlay */}
 					{dragOver && (

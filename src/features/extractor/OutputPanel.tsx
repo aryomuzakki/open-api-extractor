@@ -1,3 +1,4 @@
+import Editor from "@monaco-editor/react";
 import { useStore } from "@tanstack/react-store";
 import {
 	AlertTriangleIcon,
@@ -5,6 +6,7 @@ import {
 	CopyIcon,
 	DownloadIcon,
 	ListRestartIcon,
+	Loader2Icon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -12,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { Card } from "#/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs";
+import { useThemeObserver } from "#/hooks/use-theme-observer";
 import type { OperationInfo, RefIssue } from "#/lib/open-api-extractor";
 import { actions, extractorStore } from "./use-extractor-store";
 
@@ -23,6 +26,7 @@ export function OutputPanel() {
 
 	const [activeSubTab, setActiveSubTab] = useState<string>("preview");
 	const [copied, setCopied] = useState(false);
+	const theme = useThemeObserver();
 
 	// Handle format change and regenerate outputText
 	const handleFormatChange = (format: "json" | "yaml") => {
@@ -143,12 +147,12 @@ export function OutputPanel() {
 
 				<TabsContent value="preview" className="mt-0">
 					<div className="relative rounded-xl border bg-slate-950 text-slate-100 overflow-hidden shadow-inner">
-						<div className="absolute right-4 top-4 z-10 flex gap-2">
+						<div className="absolute right-12 top-3.5 z-10 flex gap-2">
 							<Button
 								variant="ghost"
 								size="xs"
 								onClick={handleCopy}
-								className="h-7 bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800"
+								className="h-7 bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 cursor-pointer"
 							>
 								{copied ? (
 									<CheckIcon className="h-3 w-3 text-emerald-400" />
@@ -157,9 +161,34 @@ export function OutputPanel() {
 								)}
 							</Button>
 						</div>
-						<pre className="p-5 font-mono text-xs max-h-[480px] overflow-auto select-text scrollbar-thin scrollbar-thumb-slate-800 whitespace-pre-wrap break-all leading-relaxed">
-							{outputText}
-						</pre>
+						<Editor
+							height="400px"
+							language={outputFormat}
+							theme={theme}
+							value={outputText}
+							loading={
+								<div className="flex h-[400px] items-center justify-center gap-2 text-xs text-muted-foreground bg-slate-950">
+									<Loader2Icon className="h-4 w-4 animate-spin text-primary" />
+									<span>Loading editor...</span>
+								</div>
+							}
+							options={{
+								readOnly: true,
+								minimap: { enabled: false },
+								wordWrap: "on",
+								lineNumbers: "on",
+								scrollBeyondLastLine: false,
+								automaticLayout: true,
+								fontSize: 12,
+								fontFamily: "var(--font-mono), monospace",
+								padding: { top: 8, bottom: 8 },
+								folding: true,
+								glyphMargin: false,
+								lineDecorationsWidth: 10,
+								lineNumbersMinChars: 3,
+								theme: theme === "vs-dark" ? "vs-dark" : "light",
+							}}
+						/>
 					</div>
 				</TabsContent>
 
