@@ -31,7 +31,10 @@ import {
 	DialogTrigger,
 } from "#/components/ui/dialog";
 import { Input } from "#/components/ui/input";
-import { NativeSelect, NativeSelectOption } from "#/components/ui/native-select";
+import {
+	NativeSelect,
+	NativeSelectOption,
+} from "#/components/ui/native-select";
 import { useThemeObserver } from "#/hooks/use-theme-observer";
 import { parseOpenApi } from "#/lib/open-api-extractor";
 import { cn } from "@/lib/utils";
@@ -137,17 +140,15 @@ export function SpecInput() {
 		}
 	};
 
-	const handleAuthFieldChange = (
-		updates: {
-			type?: AuthType;
-			token?: string;
-			bUser?: string;
-			bPass?: string;
-			hName?: string;
-			hVal?: string;
-			enabled?: boolean;
-		},
-	) => {
+	const handleAuthFieldChange = (updates: {
+		type?: AuthType;
+		token?: string;
+		bUser?: string;
+		bPass?: string;
+		hName?: string;
+		hVal?: string;
+		enabled?: boolean;
+	}) => {
 		const newType = updates.type ?? authType;
 		const newToken = updates.token ?? bearerToken;
 		const newBUser = updates.bUser ?? basicUser;
@@ -470,7 +471,8 @@ export function SpecInput() {
 							>
 								<ArrowRightLeftIcon className="h-3 w-3 text-primary" />
 								<span>
-									Switch to {parsedStatus.inputFormat === "json" ? "YAML" : "JSON"}
+									Switch to{" "}
+									{parsedStatus.inputFormat === "json" ? "YAML" : "JSON"}
 								</span>
 								<span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono font-semibold uppercase text-muted-foreground">
 									{parsedStatus.inputFormat}
@@ -598,7 +600,8 @@ export function SpecInput() {
 									Import OpenAPI from URL
 								</DialogTitle>
 								<DialogDescription>
-									Enter the URL of a public or protected OpenAPI specification document.
+									Enter the URL of a public or protected OpenAPI specification
+									document.
 								</DialogDescription>
 							</DialogHeader>
 
@@ -835,7 +838,8 @@ export function SpecInput() {
 								{/* Preset sample spec URLs */}
 								<div className="flex flex-col gap-1.5 pt-1">
 									<span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-										<SparklesIcon className="h-3 w-3 text-primary" /> Preset Sample Specs:
+										<SparklesIcon className="h-3 w-3 text-primary" /> Preset
+										Sample Specs:
 									</span>
 									<div className="flex flex-wrap gap-1.5">
 										{EXTRACTOR_CONFIG.SAMPLE_SPEC_URLS.map((sample) => (
