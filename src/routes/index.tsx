@@ -24,10 +24,10 @@ function App() {
 							<ScissorsIcon className="mr-1.5 h-3 w-3" /> CLIENT-ONLY OpenAPI
 							UTILITY
 						</div>
-						<h1 className="display-title text-4xl sm:text-6xl font-black tracking-tight text-[var(--sea-ink)] leading-[1.05]">
+						<h1 className="display-title text-4xl sm:text-6xl font-black tracking-tight text-sea-ink leading-[1.05]">
 							Extract the endpoints you need.
 						</h1>
-						<p className="text-base sm:text-lg text-[var(--sea-ink-soft)] max-w-2xl mx-auto">
+						<p className="text-base sm:text-lg text-sea-ink-soft max-w-2xl mx-auto">
 							Load any OpenAPI spec, check the paths you want to keep, and
 							download a clean, pruned subset with all schema dependencies
 							intact.
@@ -40,12 +40,12 @@ function App() {
 				</section>
 
 				{/* How It Works & Explanatory Details Section */}
-				<section className="flex flex-col gap-8 border-t border-[var(--line)] pt-12">
+				<section className="flex flex-col gap-8 border-t border-line pt-12">
 					<div className="text-center flex flex-col gap-2 max-w-xl mx-auto">
-						<h2 className="display-title text-2xl sm:text-3xl font-bold text-[var(--sea-ink)]">
+						<h2 className="display-title text-2xl sm:text-3xl font-bold text-sea-ink">
 							Designed for API Consumers & Providers
 						</h2>
-						<p className="text-sm text-[var(--sea-ink-soft)]">
+						<p className="text-sm text-sea-ink-soft">
 							Simplify large API contracts into compact integration subsets.
 							Safe, local-only processing.
 						</p>
@@ -56,10 +56,10 @@ function App() {
 							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
 								<Code2Icon className="h-5 w-5" />
 							</div>
-							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+							<h3 className="font-bold text-sm text-sea-ink">
 								Local-Only Pruning
 							</h3>
-							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+							<p className="text-xs text-sea-ink-soft leading-relaxed">
 								Everything runs inside your browser. Your API specifications,
 								paths, keys, and schemas are never uploaded to any server.
 							</p>
@@ -69,10 +69,10 @@ function App() {
 							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
 								<FileJsonIcon className="h-5 w-5" />
 							</div>
-							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+							<h3 className="font-bold text-sm text-sea-ink">
 								Smart dependency resolution
 							</h3>
-							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+							<p className="text-xs text-sea-ink-soft leading-relaxed">
 								Automatically traces and includes all local component reference
 								schemas (`$ref`) used by your selected endpoints, pruning
 								everything else.
@@ -83,10 +83,10 @@ function App() {
 							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
 								<ZapIcon className="h-5 w-5" />
 							</div>
-							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+							<h3 className="font-bold text-sm text-sea-ink">
 								JSON & YAML Support
 							</h3>
-							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+							<p className="text-xs text-sea-ink-soft leading-relaxed">
 								Pasted strings or uploaded files can be in JSON or YAML format.
 								Output formats can be toggled instantly between JSON and YAML.
 							</p>
@@ -96,10 +96,10 @@ function App() {
 							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
 								<ScissorsIcon className="h-5 w-5" />
 							</div>
-							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+							<h3 className="font-bold text-sm text-sea-ink">
 								Regex & Extension Strip
 							</h3>
-							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+							<p className="text-xs text-sea-ink-soft leading-relaxed">
 								Strip custom vendor extensions (`x-*` fields) and choose whether
 								to retain original tags or only output tags used by selected
 								paths.
@@ -110,10 +110,10 @@ function App() {
 							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
 								<ShieldCheckIcon className="h-5 w-5" />
 							</div>
-							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
+							<h3 className="font-bold text-sm text-sea-ink">
 								Broken Ref Warnings
 							</h3>
-							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+							<p className="text-xs text-sea-ink-soft leading-relaxed">
 								Detects and displays warnings or halts on broken references
 								inside the final spec, ensuring your subset remains fully valid.
 							</p>
@@ -123,10 +123,8 @@ function App() {
 							<div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
 								<FileTextIcon className="h-5 w-5" />
 							</div>
-							<h3 className="font-bold text-sm text-[var(--sea-ink)]">
-								Clean Specs
-							</h3>
-							<p className="text-xs text-[var(--sea-ink-soft)] leading-relaxed">
+							<h3 className="font-bold text-sm text-sea-ink">Clean Specs</h3>
+							<p className="text-xs text-sea-ink-soft leading-relaxed">
 								Outputs formatted, production-ready schemas with all empty
 								objects, tags, and unused components cleaned up.
 							</p>

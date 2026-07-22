@@ -22,7 +22,7 @@ export function ExtractorTool() {
 	const specVersion = parsedSpec?.info?.version || "1.0.0";
 
 	return (
-		<Card className="island-shell w-full overflow-hidden rounded-[2rem] border-[var(--line)] bg-gradient-to-b from-card to-card/90 shadow-2xl backdrop-blur-md">
+		<Card className="island-shell w-full overflow-hidden rounded-[2rem] border-line bg-linear-to-b from-card to-card/90 shadow-2xl backdrop-blur-md">
 			<CardHeader className="border-b border-border/40 pb-6">
 				<div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
 					<div>
